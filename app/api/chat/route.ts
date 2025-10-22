@@ -157,9 +157,12 @@ RESPONSE FORMAT:
       questionNumber: currentCount + 1
     })
   } catch (err: any) {
-    console.error("Chat API Error:", err)
+    // Log error in development only
+    if (process.env.NODE_ENV === 'development') {
+      console.error("Chat API Error:", err)
+    }
     return new Response(
-      JSON.stringify({ error: err?.message ?? "Unknown error" }), 
+      JSON.stringify({ error: "An error occurred processing your request" }), 
       { status: 500 }
     )
   }

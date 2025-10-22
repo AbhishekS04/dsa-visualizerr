@@ -26,8 +26,31 @@ const jetbrainsMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "DSA-Visualizer",
-  description: "Created with team x-force",
+  title: {
+    default: "CodeDSA - Interactive DSA Learning Platform",
+    template: "%s | CodeDSA"
+  },
+  description: "Master Data Structures & Algorithms with interactive visualizers, AI tutoring, and step-by-step explanations. Practice Arrays, Stacks, Queues, Sorting, Searching, and Dynamic Programming.",
+  keywords: ["DSA", "Data Structures", "Algorithms", "Learning", "Visualizer", "Programming", "Interview Prep"],
+  authors: [{ name: "Team X-Force" }],
+  creator: "Team X-Force",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'),
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    title: "CodeDSA - Interactive DSA Learning Platform",
+    description: "Master Data Structures & Algorithms with interactive visualizers",
+    siteName: "CodeDSA",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "CodeDSA - Interactive DSA Learning Platform",
+    description: "Master Data Structures & Algorithms with interactive visualizers",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 }
 
 export default function RootLayout({

@@ -7,6 +7,7 @@ import { AITutorBanner } from "@/components/home/ai-tutor-banner"
 import Team from "@/components/team"
 import { AnimatedThemeToggler } from "@/components/magicui/animated-theme-toggler"
 import FooterSection from "@/components/magicui/footer"
+import ChatWidget from "@/components/chat/chat-widget"
 export default function HomePage() {
   return (
     <>
@@ -22,6 +23,9 @@ export default function HomePage() {
       </main>
 
       <FooterSection/>
+
+      {/* AI Chat Widget */}
+      <ChatWidget />
 
       {/* <SiteFooter /> */}
     </>

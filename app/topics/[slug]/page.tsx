@@ -23,6 +23,13 @@ export default function TopicPage({ params }: { params: { slug: string } }) {
           <Badge variant="secondary" className="font-mono">
             {topic.tagline}
           </Badge>
+          <Link
+            href="/topics"
+            aria-label="Back to topics"
+            className="rounded-md bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600"
+          >
+            ← Back
+          </Link>
         </div>
       </div>
 

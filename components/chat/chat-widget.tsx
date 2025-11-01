@@ -83,6 +83,15 @@ export default function ChatWidget() {
   }
 
   function renderAssistantMessage(text: string) {
+    // Clean up markdown-style formatting that shouldn't be displayed literally
+    const cleanText = (str: string) => {
+      return str
+        .replace(/\*\*(.*?)\*\*/g, '$1')  // Remove bold markers
+        .replace(/\*(.*?)\*/g, '$1')      // Remove italic markers
+        .replace(/__(.*?)__/g, '$1')      // Remove underline markers
+        .replace(/~~(.*?)~~/g, '$1')      // Remove strikethrough markers
+    }
+
     const lines = text.split('\n')
     const blocks: Array<{ type: 'code'; lang: string; code: string } | { type: 'text'; text: string }> = []
     let inCode = false
@@ -91,7 +100,7 @@ export default function ChatWidget() {
 
     const flushText = () => {
       const t = buffer.join('\n').trim()
-      if (t) blocks.push({ type: 'text', text: t })
+      if (t) blocks.push({ type: 'text', text: cleanText(t) })
       buffer = []
     }
 

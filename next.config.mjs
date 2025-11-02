@@ -22,8 +22,6 @@ const nextConfig = {
   },
   // Add Vercel-specific optimizations
   swcMinify: true,
-  // Ensure proper output for Vercel
-  output: 'standalone',
 }
 
 export default nextConfig

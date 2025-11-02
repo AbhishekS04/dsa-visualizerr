@@ -20,6 +20,10 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
   },
+  // Add Vercel-specific optimizations
+  swcMinify: true,
+  // Ensure proper output for Vercel
+  output: 'standalone',
 }
 
 export default nextConfig

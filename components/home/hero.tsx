@@ -1,6 +1,8 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button";
 import { Highlighter } from "../magicui/highlighter";
+import StarOnGithub from "@/components/ui/button-github";
+
 export function Hero() {
   return (
     <section className="relative overflow-hidden border-b">
@@ -24,11 +26,7 @@ export function Hero() {
             {"Interactive Visualizations • AI Explanations • Placement Prep"}
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Link href="/topics">
-              <Button size="lg" className="glow-emerald-hover">
-                Start Learning
-              </Button>
-            </Link>
+            <StarOnGithub />
             <Link href="#features">
               <Button size="lg" variant="secondary" className="glow-sky-hover">
                 Explore Features

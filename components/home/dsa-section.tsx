@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { IframeModal } from "@/components/ui/iframe-modal"
+import { useSmoothScroll } from "@/lib/smooth-scroll"
 
 type Topic = {
   name: string
@@ -12,8 +13,6 @@ type Topic = {
   url: string
 }
 
-
-
 const topics: Topic[] = [
   { name: "Array", slug: "array", tagline: "Index, traversal & manipulation", progress: 60, url: "https://array-visualizerr.vercel.app" },
   { name: "String", slug: "string", tagline: "Pattern matching & operations", progress: 10, url: "https://string-visualizer.vercel.app" },
@@ -22,10 +21,12 @@ const topics: Topic[] = [
   { name: "Sorting", slug: "sorting", tagline: "6 algorithms to master", progress: 40, url: "https://sortingg-visualizer.vercel.app" },
   { name: "Searching", slug: "searching", tagline: "Binary, Ternary & more", progress: 25, url: "https://searchingg-visualizer.vercel.app" },
   { name: "Dynamic Programming", slug: "dynamic-programming", tagline: "Patterns & state transitions", progress: 20, url: "https://dynamic-programming-visualizerr.vercel.app" },
+  { name: "Graph", slug: "graph", tagline: "Traversal & shortest path algorithms", progress: 30, url: "https://graphh-visualizerr.vercel.app" },
 ]
 
 export function DsaSection() {
   const [selectedTopic, setSelectedTopic] = useState<Topic | null>(null)
+  const { scrollToSection } = useSmoothScroll()
 
   const handleCardClick = (topic: Topic) => {
     setSelectedTopic(topic)

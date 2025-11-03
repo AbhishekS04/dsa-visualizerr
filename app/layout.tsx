@@ -6,6 +6,7 @@ import { Geist, Geist_Mono, JetBrains_Mono } from "next/font/google"
 import { Suspense } from "react"
 import { ThemeProvider } from "@/components/theme-provider"
 import ChatWidget from "@/components/chat/chat-widget"
+import { PageTransition } from "@/components/page-transition"
 
 const geistSans = Geist({
   subsets: ["latin"],
@@ -66,7 +67,9 @@ export default function RootLayout({
     >
       <body className="font-sans bg-background text-foreground">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <Suspense fallback={null}>{children}</Suspense>
+          <PageTransition>
+            <Suspense fallback={null}>{children}</Suspense>
+          </PageTransition>
         </ThemeProvider>
         <Analytics />
         <ChatWidget />

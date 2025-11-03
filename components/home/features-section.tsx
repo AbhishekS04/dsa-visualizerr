@@ -3,6 +3,9 @@
 import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { IframeModal } from "@/components/ui/iframe-modal"
+import { cn } from "@/lib/utils"
+import { ANIMATION_CLASSES } from "@/lib/animations"
+import { useSmoothScroll } from "@/lib/smooth-scroll"
 
 
 // The other visualizers will be used in this section of the codebase
@@ -17,9 +20,15 @@ const features = [
 
 export function FeaturesSection() {
   const [selectedFeature, setSelectedFeature] = useState<{ name: string; href: string } | null>(null)
+  const { scrollToSection } = useSmoothScroll()
 
   const handleFeatureClick = (feature: { name: string; href: string }) => {
-    setSelectedFeature(feature)
+    // Check if the href is an internal anchor link
+    if (feature.href.startsWith('#')) {
+      scrollToSection(feature.href, 80);
+    } else {
+      setSelectedFeature(feature)
+    }
   }
 
   const handleCloseModal = () => {
@@ -38,7 +47,10 @@ export function FeaturesSection() {
           <button
             key={f.name}
             onClick={() => handleFeatureClick(f)}
-            className="rounded-full border px-4 py-2 text-sm transition-colors hover:bg-emerald-500/10 hover:text-emerald-700 dark:hover:text-emerald-300 cursor-pointer"
+            className={cn(
+              "rounded-full border px-4 py-2 text-sm transition-colors hover:bg-emerald-500/10 hover:text-emerald-700 dark:hover:text-emerald-300 cursor-pointer",
+              ANIMATION_CLASSES.smoothHover
+            )}
           >
             {f.name}
           </button>
@@ -50,7 +62,7 @@ export function FeaturesSection() {
         {features.slice(0, 3).map((f, i) => (
           <Card 
             key={i} 
-            className="h-full transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-sky-500/10 cursor-pointer"
+            className="h-full cursor-pointer"
             onClick={() => handleFeatureClick(f)}
           >
             <CardHeader>

@@ -3,7 +3,9 @@
 import { Moon, SunDim } from "lucide-react";
 import { useState, useRef } from "react";
 import { flushSync } from "react-dom";
+import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { ANIMATION_DURATION, EASING } from "@/lib/animations";
 
 type props = {
   className?: string;
@@ -12,6 +14,7 @@ type props = {
 export const AnimatedThemeToggler = ({ className }: props) => {
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
+  
   const changeTheme = async () => {
     if (!buttonRef.current) return;
 
@@ -39,15 +42,40 @@ export const AnimatedThemeToggler = ({ className }: props) => {
         ],
       },
       {
-        duration: 700,
-        easing: "ease-in-out",
+        duration: ANIMATION_DURATION.SLOW,
+        easing: "cubic-bezier(0.3, 0, 0, 1)", // Standard easing for theme transitions
         pseudoElement: "::view-transition-new(root)",
       },
     );
   };
+  
   return (
-    <button ref={buttonRef} onClick={changeTheme} className={cn(className)}>
-      {isDarkMode ? <SunDim /> : <Moon />}
-    </button>
+    <motion.button 
+      ref={buttonRef} 
+      onClick={changeTheme} 
+      className={cn("relative", className)}
+      whileHover={{ scale: 1.1 }}
+      whileTap={{ scale: 0.95 }}
+      transition={{ 
+        type: "spring", 
+        stiffness: 500, 
+        damping: 30,
+        duration: ANIMATION_DURATION.FAST / 1000
+      }}
+    >
+      <motion.div
+        animate={{ rotate: isDarkMode ? 0 : 180 }}
+        transition={{ 
+          duration: ANIMATION_DURATION.NORMAL / 1000,
+          ease: EASING.SMOOTH
+        }}
+      >
+        {isDarkMode ? (
+          <SunDim className="h-5 w-5" />
+        ) : (
+          <Moon className="h-5 w-5" />
+        )}
+      </motion.div>
+    </motion.button>
   );
 };

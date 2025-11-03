@@ -8,20 +8,29 @@ import { useEffect, useState } from 'react';
 export default function StarOnGithub() {
   // Using your actual repository
   const githubUrl = "https://github.com/AbhishekS04/dsa-visualizerr";
-  const [stars, setStars] = useState<number | null>(null);
-  const [error, setError] = useState(false);
+  const [stars, setStars] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<boolean>(false);
   
   useEffect(() => {
     const fetchStars = async () => {
       try {
+        setLoading(true);
         const response = await fetch('/api/github');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
         const data = await response.json();
-        setStars(data.stars);
+        // According to specifications, show actual star count or 0, never fallback values
+        setStars(data.stars || 0);
         setError(false);
       } catch (error) {
         console.error('Error fetching GitHub stars:', error);
-        setStars(0); // Show 0 instead of fallback when there's an error
+        // Show 0 instead of fallback when there's an error, as per specifications
+        setStars(0);
         setError(true);
+      } finally {
+        setLoading(false);
       }
     };
     
@@ -55,7 +64,7 @@ export default function StarOnGithub() {
             ></path>
           </svg>
           <span className="font-display inline-block font-medium tracking-wider text-black tabular-nums dark:text-white">
-            {stars !== null ? (stars >= 1000 ? `${(stars / 1000).toFixed(1)}k` : stars) : '...'}
+            {loading ? '...' : (stars >= 1000 ? `${(stars / 1000).toFixed(1)}k` : stars)}
           </span>
         </div>
       </Button>

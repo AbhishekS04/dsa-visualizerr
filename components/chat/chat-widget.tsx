@@ -2,12 +2,14 @@
 
 import type React from "react"
 import { useEffect, useRef, useState } from "react"
+import { motion, AnimatePresence } from "framer-motion"
 import { Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 import { Spinner } from "@/components/ui/spinner"
+import { ANIMATION_DURATION, EASING } from "@/lib/animations"
 
 type Msg = { role: "user" | "assistant"; content: string; id: string }
 
@@ -135,7 +137,19 @@ export default function ChatWidget() {
             )
           }
           return (
-            <p key={i} className="leading-relaxed">{b.text}</p>
+            <motion.p 
+              key={i} 
+              className="leading-relaxed"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ 
+                duration: ANIMATION_DURATION.NORMAL / 1000, 
+                ease: EASING.EMPHASIZED_DECELERATE,
+                delay: i * 0.05
+              }}
+            >
+              {b.text}
+            </motion.p>
           )
         })}
       </div>
@@ -152,7 +166,12 @@ export default function ChatWidget() {
       } catch {}
     }
     return (
-      <div className="rounded-md border border-slate-700/80 bg-slate-900 shadow-sm overflow-hidden">
+      <motion.div 
+        className="rounded-md border border-slate-700/80 bg-slate-900 shadow-sm overflow-hidden"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: ANIMATION_DURATION.NORMAL / 1000, ease: EASING.STANDARD }}
+      >
         <div className="flex items-center justify-between border-b border-slate-700/80 bg-slate-800/70 px-2 py-1">
           <span className="text-[10px] tracking-wide text-slate-300">{displayLang}</span>
           <button
@@ -185,101 +204,146 @@ export default function ChatWidget() {
         <pre className="p-3 text-xs text-slate-100 overflow-x-auto whitespace-pre font-mono">
           <code className={`language-${lang}`}>{code}</code>
         </pre>
-      </div>
+      </motion.div>
     )
   }
 
   return (
     <div className={cn("fixed bottom-4 right-4 z-[100] flex flex-col items-end gap-2")} data-testid="chat-widget-container">
-      {open && (
-        <Card 
-          role="dialog" 
-          aria-modal="true" 
-          aria-label="DSA Tutor chat"
-          className="w-[min(92vw,360px)] overflow-hidden border-emerald-200/30 shadow-lg shadow-emerald-500/10 dark:border-emerald-800/30"
-        >
-          <div className="flex items-center justify-between border-b px-3 py-2">
-            <div className="flex items-center gap-2">
-              <div className="text-sm font-medium">DSA Tutor</div>
-              <span className="text-xs text-muted-foreground">({questionsRemaining} left)</span>
-            </div>
-            <button
-              aria-label="Close chat"
-              className="rounded p-1 text-sm text-muted-foreground hover:bg-muted"
-              onClick={() => setOpen(false)}
-            >
-              Close
-            </button>
-          </div>
-
-          <div 
-            className="max-h-[50vh] min-h-[220px] space-y-3 overflow-y-auto px-3 py-3" 
-            aria-live="polite" 
-            aria-relevant="additions"
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: 20 }}
+            transition={{ 
+              duration: ANIMATION_DURATION.NORMAL / 1000, 
+              ease: EASING.SMOOTH 
+            }}
           >
-            {!hasChatted && (
-              <div className="mr-auto max-w-[90%] rounded-md bg-muted px-3 py-2 text-sm text-muted-foreground">
-                {(() => {
-                  const hour = new Date().getHours()
-                  const period = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening"
-                  return `${period}! Ask me anything about DSA and algorithms.`
-                })()}
+            <Card 
+              role="dialog" 
+              aria-modal="true" 
+              aria-label="DSA Tutor chat"
+              className="w-[min(92vw,360px)] overflow-hidden border-emerald-200/30 shadow-lg shadow-emerald-500/10 dark:border-emerald-800/30"
+            >
+              <div className="flex items-center justify-between border-b px-3 py-2">
+                <div className="flex items-center gap-2">
+                  <div className="text-sm font-medium">DSA Tutor</div>
+                  <span className="text-xs text-muted-foreground">({questionsRemaining} left)</span>
+                </div>
+                <button
+                  aria-label="Close chat"
+                  className="rounded p-1 text-sm text-muted-foreground hover:bg-muted transition-colors duration-200"
+                  onClick={() => setOpen(false)}
+                >
+                  Close
+                </button>
               </div>
-            )}
-            {messages.map((m) => (
-              <div
-                key={m.id}
-                className={cn(
-                  "rounded-md px-3 py-2 text-sm whitespace-pre-wrap",
-                  m.role === "user"
-                    ? "ml-auto max-w-[85%] bg-emerald-600 text-white dark:bg-emerald-500"
-                    : "mr-auto max-w-[90%] bg-muted",
-                )}
-              >
-                {m.role === "assistant" ? (
-                  renderAssistantMessage(m.content)
-                ) : (
-                  m.content
-                )}
-              </div>
-            ))}
-            <div ref={endRef} />
-            {loading && (
-              <div className={cn("mr-auto max-w-[90%] rounded-md bg-muted px-3 py-2 text-sm text-muted-foreground flex items-center gap-2")}
-                   aria-label="Assistant is thinking">
-                <Spinner className="size-4" />
-                <span>Thinking…</span>
-              </div>
-            )}
-          </div>
 
-          <form onSubmit={sendMessage} className="flex items-center gap-2 border-t px-3 py-2">
-            <Input
-              placeholder={limitReached ? "Limit reached" : "Ask about DSA…"}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              disabled={loading || limitReached}
-              aria-label="Chat input"
-            />
-            <Button type="submit" disabled={loading || limitReached}>
-              {loading ? "..." : "Send"}
-            </Button>
-          </form>
-        </Card>
-      )}
+              <div 
+                className="max-h-[50vh] min-h-[220px] space-y-3 overflow-y-auto px-3 py-3" 
+                aria-live="polite" 
+                aria-relevant="additions"
+              >
+                {!hasChatted && (
+                  <motion.div 
+                    className="mr-auto max-w-[90%] rounded-md bg-muted px-3 py-2 text-sm text-muted-foreground"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: ANIMATION_DURATION.NORMAL / 1000, ease: EASING.STANDARD }}
+                  >
+                    {(() => {
+                      const hour = new Date().getHours()
+                      const period = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening"
+                      return `${period}! Ask me anything about DSA and algorithms.`
+                    })()}
+                  </motion.div>
+                )}
+                <AnimatePresence>
+                  {messages.map((m) => (
+                    <motion.div
+                      key={m.id}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ 
+                        duration: ANIMATION_DURATION.NORMAL / 1000, 
+                        ease: EASING.STANDARD 
+                      }}
+                      className={cn(
+                        "rounded-md px-3 py-2 text-sm whitespace-pre-wrap",
+                        m.role === "user"
+                          ? "ml-auto max-w-[85%] bg-emerald-600 text-white dark:bg-emerald-500"
+                          : "mr-auto max-w-[90%] bg-muted",
+                      )}
+                    >
+                      {m.role === "assistant" ? (
+                        renderAssistantMessage(m.content)
+                      ) : (
+                        m.content
+                      )}
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+                <div ref={endRef} />
+                {loading && (
+                  <motion.div 
+                    className={cn("mr-auto max-w-[90%] rounded-md bg-muted px-3 py-2 text-sm text-muted-foreground flex items-center gap-2")}
+                    aria-label="Assistant is thinking"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: ANIMATION_DURATION.NORMAL / 1000 }}
+                  >
+                    <Spinner className="size-4" />
+                    <span>Thinking…</span>
+                  </motion.div>
+                )}
+              </div>
+
+              <form onSubmit={sendMessage} className="flex items-center gap-2 border-t px-3 py-2">
+                <Input
+                  placeholder={limitReached ? "Limit reached" : "Ask about DSA…"}
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  disabled={loading || limitReached}
+                  aria-label="Chat input"
+                />
+                <Button 
+                  type="submit" 
+                  disabled={loading || limitReached}
+                  className="transition-all duration-200 ease-out"
+                >
+                  {loading ? "..." : "Send"}
+                </Button>
+              </form>
+            </Card>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {!open && (
-        <Button
-          aria-label="Open chat"
-          data-testid="chat-open-button"
-          size="icon"
-          className="h-12 w-12 rounded-full bg-emerald-600 text-white shadow-lg hover:bg-emerald-700 dark:bg-emerald-500"
-          onClick={() => setOpen(true)}
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.8, opacity: 0 }}
+          transition={{ 
+            duration: ANIMATION_DURATION.FAST / 1000, 
+            ease: EASING.SMOOTH 
+          }}
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M20 2H4a2 2 0 0 0-2 2v18l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2ZM6 9h12v2H6V9Zm0 4h8v2H6v-2Z" />
-          </svg>
-        </Button>
+          <Button
+            aria-label="Open chat"
+            data-testid="chat-open-button"
+            size="icon"
+            className="h-12 w-12 rounded-full bg-emerald-600 text-white shadow-lg hover:bg-emerald-700 dark:bg-emerald-500 transition-all duration-300 ease-out hover:scale-105 active:scale-95"
+            onClick={() => setOpen(true)}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M20 2H4a2 2 0 0 0-2 2v18l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2ZM6 9h12v2H6V9Zm0 4h8v2H6v-2Z" />
+            </svg>
+          </Button>
+        </motion.div>
       )}
     </div>
   )

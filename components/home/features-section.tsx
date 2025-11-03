@@ -10,7 +10,7 @@ import { useSmoothScroll } from "@/lib/smooth-scroll"
 
 // The other visualizers will be used in this section of the codebase
 const features = [
-  { name: "Side-by-side Algorithm Comparisons", href: "https://sortingg-visualizer.vercel.app" },
+  { name: "N-Queens Visualizer", href: "https://n-queens-rho.vercel.app" },
   { name: "Custom Input Upload", href: "https://www.cs.usfca.edu/~galles/visualization/Algorithms.html" },
   { name: "Save Progress (Resume Anytime)", href: "https://www.programiz.com/dsa" },
   { name: "Gamification (Leaderboards, Challenges, Badges)", href: "https://leetcode.com" },
@@ -18,8 +18,19 @@ const features = [
   { name: "Community (Share & Discover Visualizations)", href: "https://github.com" },
 ]
 
+// Other tools data
+const otherTools = [
+  { name: "Text Sharing Platform", href: "https://shareeit.vercel.app" },
+  { name: "Link Shortener", href: "https://cropit.vercel.app" },
+  { name: "Typing Practice Platform", href: "https://typing-ghost.vercel.app" },
+  { name: "Data Structure Explorer", href: "https://www.cs.usfca.edu/~galles/visualization/Algorithms.html" },
+  { name: "Interview Prep Kit", href: "https://leetcode.com/explore/" },
+  { name: "Algorithm Practice", href: "https://www.hackerrank.com/domains/tutorials/10-days-of-algorithms" },
+]
+
 export function FeaturesSection() {
   const [selectedFeature, setSelectedFeature] = useState<{ name: string; href: string } | null>(null)
+  const [selectedTool, setSelectedTool] = useState<{ name: string; href: string } | null>(null)
   const { scrollToSection } = useSmoothScroll()
 
   const handleFeatureClick = (feature: { name: string; href: string }) => {
@@ -31,59 +42,117 @@ export function FeaturesSection() {
     }
   }
 
+  const handleToolClick = (tool: { name: string; href: string }) => {
+    setSelectedTool(tool)
+  }
+
   const handleCloseModal = () => {
     setSelectedFeature(null)
+    setSelectedTool(null)
   }
 
   return (
-    <section id="features" className="mx-auto max-w-6xl px-4 pb-12 md:pb-16">
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold tracking-tight md:text-2xl">Platform Features</h2>
-      </div>
+    <>
+      <section id="features" className="mx-auto max-w-6xl px-4 pb-12 md:pb-16">
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold tracking-tight md:text-2xl">Platform Features</h2>
+        </div>
 
-      {/* pill buttons */}
-      <div className="flex flex-wrap gap-3">
-        {features.map((f) => (
-          <button
-            key={f.name}
-            onClick={() => handleFeatureClick(f)}
-            className={cn(
-              "rounded-full border px-4 py-2 text-sm transition-colors hover:bg-emerald-500/10 hover:text-emerald-700 dark:hover:text-emerald-300 cursor-pointer",
-              ANIMATION_CLASSES.smoothHover
-            )}
-          >
-            {f.name}
-          </button>
-        ))}
-      </div>
+        {/* pill buttons */}
+        <div className="flex flex-wrap gap-3">
+          {features.map((f) => (
+            <button
+              key={f.name}
+              onClick={() => handleFeatureClick(f)}
+              className={cn(
+                "rounded-full border px-4 py-2 text-sm transition-colors hover:bg-emerald-500/10 hover:text-emerald-700 dark:hover:text-emerald-300 cursor-pointer",
+                ANIMATION_CLASSES.smoothHover
+              )}
+            >
+              {f.name}
+            </button>
+          ))}
+        </div>
 
-      {/* mini cards for rhythm */}
-      <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3">
-        {features.slice(0, 3).map((f, i) => (
-          <Card 
-            key={i} 
-            className="h-full cursor-pointer"
-            onClick={() => handleFeatureClick(f)}
-          >
-            <CardHeader>
-              <CardTitle className="text-base">{f.name}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                Explore this capability with interactive demos and real interview-style exercises.
-              </p>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+        {/* mini cards for rhythm */}
+        <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3">
+          {features.slice(0, 3).map((f, i) => (
+            <Card 
+              key={i} 
+              className="h-full cursor-pointer"
+              onClick={() => handleFeatureClick(f)}
+            >
+              <CardHeader>
+                <CardTitle className="text-base">{f.name}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  Explore this capability with interactive demos and real interview-style exercises.
+                </p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
 
-      {/* Iframe Modal */}
-      <IframeModal
-        isOpen={selectedFeature !== null}
-        onClose={handleCloseModal}
-        url={selectedFeature?.href || ""}
-        title={selectedFeature?.name || ""}
-      />
-    </section>
+        {/* Iframe Modal */}
+        <IframeModal
+          isOpen={selectedFeature !== null}
+          onClose={handleCloseModal}
+          url={selectedFeature?.href || ""}
+          title={selectedFeature?.name || ""}
+        />
+      </section>
+
+      {/* Other Tools Section */}
+      <section className="mx-auto max-w-6xl px-4 pb-12 md:pb-16">
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold tracking-tight md:text-2xl">Other Tools</h2>
+        </div>
+
+        {/* pill buttons */}
+        <div className="flex flex-wrap gap-3">
+          {otherTools.map((tool) => (
+            <button
+              key={tool.name}
+              onClick={() => handleToolClick(tool)}
+              className={cn(
+                "rounded-full border px-4 py-2 text-sm transition-colors hover:bg-emerald-500/10 hover:text-emerald-700 dark:hover:text-emerald-300 cursor-pointer",
+                ANIMATION_CLASSES.smoothHover
+              )}
+            >
+              {tool.name}
+            </button>
+          ))}
+        </div>
+
+        {/* mini cards for rhythm */}
+        <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3">
+          {otherTools.slice(0, 3).map((tool, i) => (
+            <Card 
+              key={i} 
+              className="h-full cursor-pointer"
+              onClick={() => handleToolClick(tool)}
+            >
+              <CardHeader>
+                <CardTitle className="text-base">{tool.name}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  Access additional tools to enhance your learning experience.
+                </p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Iframe Modal for Tools */}
+        <IframeModal
+          isOpen={selectedTool !== null}
+          onClose={handleCloseModal}
+          url={selectedTool?.href || ""}
+          title={selectedTool?.name || ""}
+        />
+      </section>
+    </>
   )
 }
